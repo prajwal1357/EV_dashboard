@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/:path*",
-      "destination": "/app/:path*"
+      "source": "/((?!app/).*)",
+      "destination": "/app/$1"
     }
   ]
 }
