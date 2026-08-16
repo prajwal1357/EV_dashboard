@@ -1,17 +1,3 @@
 {
-  "cleanUrls": true,
-  "routes": [
-    {
-      "src": "^/app/(.*)$",
-      "dest": "/app/$1"
-    },
-    {
-      "src": "^/(app.js|styles.css|battery_dashboard.png|presentation.html|user_battery_reference.jpg|user_infotainment_reference.jpg)$",
-      "dest": "/app/$1"
-    },
-    {
-      "src": "^/(.*)$",
-      "dest": "/app/index.html"
-    }
-  ]
+  "outputDirectory": "app"
 }
