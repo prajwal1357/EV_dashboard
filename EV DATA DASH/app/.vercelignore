@@ -1,0 +1,2 @@
+# Ignore server.js to prevent Vercel from building it as a serverless function
+server.js
