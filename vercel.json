@@ -2,7 +2,11 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!app/).*)",
+      "source": "/",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/((?!app/).+)",
       "destination": "/app/$1"
     }
   ]
