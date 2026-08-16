@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Fleet Analytics - Enterprise Presentation Deck</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #0B132B;
+      --card-bg: #1C2541;
+      --accent-cyan: #48CAE4;
+      --accent-blue: #0077B6;
+      --accent-green: #4ADE80;
+      --accent-red: #EF4444;
+      --accent-gold: #FBBF24;
+      --text-white: #FFFFFF;
+      --text-muted: #94A3B8;
+      --border-color: rgba(72, 202, 228, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(28, 37, 65, 0.6);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-cyan);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: var(--card-bg);
+      color: var(--text-white);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-cyan);
+      color: var(--bg-dark);
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-primary {
+      background: var(--accent-cyan);
+      color: var(--bg-dark);
+    }
+
+    /* Slide Stage */
+    .slide-stage {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      max-height: 680px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      flex-direction: column;
+      justify-content: space-between;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-category {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+      flex: 1;
+    }
+
+    .card {
+      background: rgba(11, 19, 43, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .card-list li {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      position: relative;
+      padding-left: 1.2rem;
+    }
+
+    .card-list li::before {
+      content: "•";
+      color: var(--accent-cyan);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+
+    /* Title Slide Specific */
+    .title-slide {
+      justify-content: center;
+      align-items: flex-start;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(28, 37, 65, 0.9), rgba(11, 19, 43, 0.95));
+      border-left: 8px solid var(--accent-cyan);
+    }
+
+    .title-slide h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(90deg, #FFFFFF, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-slide p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      background: rgba(72, 202, 228, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(72, 202, 228, 0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Bottom Navigation Bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(28, 37, 65, 0.6);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: var(--accent-cyan);
+      width: 24px;
+      border-radius: 10px;
+    }
+
+    .speaker-notes {
+      display: none;
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1000px;
+      background: rgba(11, 19, 43, 0.95);
+      border: 1px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .speaker-notes.visible {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="top-bar">
+    <div class="brand">
+      <i class="fa-solid fa-charging-station"></i> EV Fleet Analytics Deck
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="toggleNotes()"><i class="fa-solid fa-sticky-note"></i> Speaker Notes</button>
+      <a class="btn btn-primary" href="/EV_Fleet_Analytics_Platform_Presentation.pptx" download><i class="fa-solid fa-file-powerpoint"></i> Download .PPTX</a>
+    </div>
+  </div>
+
+  <!-- Slide Stage -->
+  <div class="slide-stage">
+
+    <!-- Slide 1: Title -->
+    <div class="slide title-slide active" data-slide="1">
+      <div class="slide-category">Enterprise Architecture & Executive Briefing</div>
+      <h1>ELECTRIC VEHICLE (EV) FLEET CHARGING & BATTERY HEALTH ANALYTICS PLATFORM</h1>
+      <p>An enterprise end-to-end data engineering, cloud data warehousing, RPA orchestration, business intelligence, and AI analytics solution.</p>
+      <div class="tag-container">
+        <span class="tag">Snowflake DW</span>
+        <span class="tag">Alteryx ETL</span>
+        <span class="tag">UiPath RPA</span>
+        <span class="tag">Microsoft Fabric</span>
+        <span class="tag">Power BI DirectLake</span>
+        <span class="tag">AI Predictive Engine</span>
+      </div>
+      <div class="speaker-notes" id="note-1">
+        💡 <strong>Speaker Notes:</strong> Welcome executives and stakeholders. Today we present the enterprise-grade EV Fleet Analytics Platform, built to address battery degradation risks, unmonitored charging expenses, and fleet operational downtime.
+      </div>
+    </div>
+
+    <!-- Slide 2: Executive Summary -->
+    <div class="slide" data-slide="2">
+      <div class="slide-header">
+        <div class="slide-category">Executive Summary & ROI</div>
+        <div class="slide-title">Business Problem & Value Proposition</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);"><i class="fa-solid fa-triangle-exclamation"></i> Operational Challenges</div>
+          <ul class="card-list">
+            <li>Unmonitored Battery Degradation causing unexpected roadside breakdown.</li>
+            <li>Uncontrolled Charging Expenses during high-tariff peak grid windows.</li>
+            <li>Fragmented Data Silos across vehicle telemetry, depot location, and financial logs.</li>
+            <li>Lack of Predictive Insights to replace battery cells before failure.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green);"><i class="fa-solid fa-chart-line"></i> Value Delivered & ROI</div>
+          <ul class="card-list">
+            <li><strong>14% Monthly Energy Cost Savings</strong> via AI-driven peak-shifting.</li>
+            <li>Continuous State of Health (SOH) tracking ensuring battery health > 80%.</li>
+            <li>Automated real-time ETL pipeline delivering telemetry to Snowflake DW.</li>
+            <li>6 Interactive Dark-Blue Dashboards + Natural Language AI Console.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-2">
+        💡 <strong>Speaker Notes:</strong> The core ROI of this system is financial and operational: 14% energy bill savings by shifting charge schedules to off-peak hours and continuous telemetry to eliminate premature battery replacements.
+      </div>
+    </div>
+
+    <!-- Slide 3: Architecture -->
+    <div class="slide" data-slide="3">
+      <div class="slide-header">
+        <div class="slide-category">Enterprise Architecture</div>
+        <div class="slide-title">End-to-End Data Pipeline & System Flow</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-filter"></i> 1. Ingestion & Prep</div>
+          <ul class="card-list">
+            <li>Kaggle EV telemetry dataset ingestion.</li>
+            <li>Alteryx ETL workflow cleans raw data.</li>
+            <li>Imputes missing temperature & distance.</li>
+            <li>Computes kWh/100km efficiency metrics.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-blue);">
+          <div class="card-title" style="color: var(--accent-blue);"><i class="fa-solid fa-database"></i> 2. Warehouse & RPA</div>
+          <ul class="card-list">
+            <li>Snowflake Star Schema (RAW/CORE/MART).</li>
+            <li>CDC Streams & 60-min Scheduled Tasks.</li>
+            <li>UiPath RPA triggers stored procedures.</li>
+            <li>Automated PBI refresh & HTML email reports.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-gold);">
+          <div class="card-title" style="color: var(--accent-gold);"><i class="fa-solid fa-brain"></i> 3. BI & AI UI</div>
+          <ul class="card-list">
+            <li>6 Dark-Blue Microsoft Fabric pages.</li>
+            <li>Production DAX metrics & calculations.</li>
+            <li>Full-stack Web Application (Chart.js).</li>
+            <li>Predictive SOH & cost AI engine.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-3">
+        💡 <strong>Speaker Notes:</strong> Data flows seamlessly from edge vehicle sensors and Kaggle feeds through Alteryx, Snowflake cloud warehousing, UiPath RPA, and into interactive Power BI / Fabric web dashboards.
+      </div>
+    </div>
+
+    <!-- Slide 4: Alteryx -->
+    <div class="slide" data-slide="4">
+      <div class="slide-header">
+        <div class="slide-category">Data Engineering</div>
+        <div class="slide-title">Alteryx ETL Data Cleansing & Transformation</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-diagram-project"></i> Workflow Pipeline Modules</div>
+          <ul class="card-list">
+            <li><strong>Input & Select Tool:</strong> Ingests raw telemetry and formats field datatypes.</li>
+            <li><strong>Data Cleansing:</strong> Strips whitespace, null padding, and malformed telemetry.</li>
+            <li><strong>Imputation Engine:</strong> Fills missing ambient temperatures using median depot values.</li>
+            <li><strong>Unique & Filter:</strong> Deduplicates on composite key <code>(Vehicle_ID, Charging_Start_Time)</code>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-sliders"></i> Feature Engineering & Metrics</div>
+          <ul class="card-list">
+            <li><strong>Energy Efficiency:</strong> Calculates <code>(Energy_Consumed / Distance) * 100</code> (kWh/100km).</li>
+            <li><strong>SOH Degradation Bucket:</strong> Categorizes battery health (Optimal > 90%, Moderate 80-90%, Alert < 80%).</li>
+            <li><strong>Cost Tariff Engine:</strong> Maps charging session timestamp against peak/off-peak grid rates.</li>
+            <li>Cleaned CSV landing export for Snowflake stage.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-4">
+        💡 <strong>Speaker Notes:</strong> Alteryx handles raw data quality before warehousing. It resolves missing sensor telemetry, deduplicates records, and calculates custom features like SOH degradation risk buckets.
+      </div>
+    </div>
+
+    <!-- Slide 5: Snowflake -->
+    <div class="slide" data-slide="5">
+      <div class="slide-header">
+        <div class="slide-category">Cloud Data Warehousing</div>
+        <div class="slide-title">Snowflake Star Schema & CDC Tasks</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-blue);">
+          <div class="card-title" style="color: var(--accent-blue);"><i class="fa-solid fa-server"></i> Multi-Tier Schema DDL</div>
+          <ul class="card-list">
+            <li><strong>RAW Schema:</strong> Staging tables for raw CSV copy loads.</li>
+            <li><strong>CORE Schema:</strong> Star Schema dimension & fact tables:
+              <ul style="margin-left: 1rem; margin-top: 0.3rem;">
+                <li><code>DIM_VEHICLE</code>: Vehicle model, battery size, depot ID.</li>
+                <li><code>FACT_CHARGING_SESSIONS</code>: SOH, kWh, cost, efficiency.</li>
+              </ul>
+            </li>
+            <li><strong>MART Schema:</strong> Pre-aggregated analytical business views.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-blue);">
+          <div class="card-title" style="color: var(--accent-blue);"><i class="fa-solid fa-gears"></i> Stored Procedures & CDC</div>
+          <ul class="card-list">
+            <li><code>SP_POPULATE_STAR_SCHEMA()</code>: Transforms RAW into CORE dimensional model.</li>
+            <li><code>SP_CALCULATE_BATTERY_DEGRADATION()</code>: Tracks monthly SOH decay per vehicle model.</li>
+            <li><strong>CDC Streams:</strong> Captures change data on staging tables.</li>
+            <li><strong>Scheduled Tasks:</strong> Triggers warehouse refresh every 60 minutes automatically.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-5">
+        💡 <strong>Speaker Notes:</strong> Snowflake is configured with a high-performance Star Schema model. Change Data Capture (CDC) streams and 60-minute automated tasks ensure data is always fresh.
+      </div>
+    </div>
+
+    <!-- Slide 6: UiPath -->
+    <div class="slide" data-slide="6">
+      <div class="slide-header">
+        <div class="slide-category">Process Orchestration</div>
+        <div class="slide-title">UiPath Robotic Process Automation (RPA)</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-gold);">
+          <div class="card-title" style="color: var(--accent-gold);"><i class="fa-solid fa-robot"></i> Automated Workflow Orchestration</div>
+          <ul class="card-list">
+            <li><strong>File System Watcher:</strong> Automatically detects cleaned CSV drops from Alteryx.</li>
+            <li><strong>Snowflake DB Connector:</strong> Triggers <code>SP_POPULATE_STAR_SCHEMA</code> execution.</li>
+            <li><strong>Power BI REST API:</strong> Invokes automated dataset refresh upon SP completion.</li>
+            <li><strong>Exception Handling:</strong> Try-Catch blocks log any network or payload errors.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-gold);">
+          <div class="card-title" style="color: var(--accent-gold);"><i class="fa-solid fa-paper-plane"></i> Executive Reports & Alerts</div>
+          <ul class="card-list">
+            <li><strong>Daily Excel Generator:</strong> Builds executive fleet summary spreadsheets.</li>
+            <li><strong>HTML Email Dispatcher:</strong> Distributes daily reports to executive leadership.</li>
+            <li><strong>Alert System:</strong> Immediately emails fleet engineers if vehicle SOH < 80%.</li>
+            <li>Audit metrics recorded to <code>GOVERNANCE.AUDIT_LOGS</code>.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-6">
+        💡 <strong>Speaker Notes:</strong> UiPath RPA connects the entire enterprise loop. It detects files, runs database jobs, refreshes BI reports, and dispatches critical alerts to managers.
+      </div>
+    </div>
+
+    <!-- Slide 7: Power BI & Fabric -->
+    <div class="slide" data-slide="7">
+      <div class="slide-header">
+        <div class="slide-category">Visual Analytics</div>
+        <div class="slide-title">Power BI & Microsoft Fabric Dashboards</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-border-all"></i> 6 Interactive Dashboard Pages</div>
+          <ul class="card-list">
+            <li><strong>1. Executive Dashboard:</strong> Total fleet active vehicles, energy spent, SOH.</li>
+            <li><strong>2. Battery Health:</strong> SOH degradation curves, cell voltage, temperature.</li>
+            <li><strong>3. Charging Ops:</strong> Station utilization, peak vs off-peak rates.</li>
+            <li><strong>4. Fleet Performance:</strong> Distance covered, kWh/100km efficiency.</li>
+            <li><strong>5. Cost Analysis:</strong> Energy cost growth & depot tariff breakdown.</li>
+            <li><strong>6. AI Dashboard:</strong> Predictive maintenance alerts & Q&A.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-code"></i> Fabric Theme & Production DAX</div>
+          <ul class="card-list">
+            <li><strong>Design Tokens:</strong> Dark Obsidian (#0B132B) & Slate Navy (#1C2541).</li>
+            <li><strong>DAX SOH:</strong> <code>CALCULATE(AVERAGE(FACT[Battery_SOH]))</code></li>
+            <li><strong>DAX Cost Growth:</strong> <code>DIVIDE([Current_Cost] - [Prior_Cost], [Prior_Cost])</code></li>
+            <li><strong>DirectLake Architecture:</strong> Blazing-fast direct query over OneLake Delta files.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-7">
+        💡 <strong>Speaker Notes:</strong> The Power BI / Fabric solution delivers 6 dark blue themed dashboard pages powered by optimized DAX metrics and DirectLake mode.
+      </div>
+    </div>
+
+    <!-- Slide 8: AI Engine -->
+    <div class="slide" data-slide="8">
+      <div class="slide-header">
+        <div class="slide-category">AI Insights</div>
+        <div class="slide-title">Predictive AI Engine & Natural Language Console</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green);"><i class="fa-solid fa-microchip"></i> Predictive AI Models & Live Telemetry</div>
+          <ul class="card-list">
+            <li><strong>SOH Degradation Predictor:</strong> Estimates battery cell end-of-life timeframe based on thermal stress.</li>
+            <li><strong>Peak-Shifting Cost Optimizer:</strong> Analyzes utility rate schedules to shift charging to off-peak hours (11 PM - 6 AM).</li>
+            <li><strong>Live Telemetry Cockpit:</strong> Segmented gauge bar (Low, Optimal, High) with real-time waveform ticker.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-green);">
+          <div class="card-title" style="color: var(--accent-green);"><i class="fa-solid fa-gauge-high"></i> High-Tech Battery GUI</div>
+          <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 0.3rem;">
+            <img src="/battery_dashboard.png" alt="Battery Health GUI" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-8">
+        💡 <strong>Speaker Notes:</strong> The AI Assistant combines machine learning degradation models with a natural language search console and a real-time battery health cockpit display matching modern luxury EV dashboards.
+      </div>
+    </div>
+
+    <!-- Slide 9: Governance & Security -->
+    <div class="slide" data-slide="9">
+      <div class="slide-header">
+        <div class="slide-category">Security & Governance</div>
+        <div class="slide-title">Data Governance, Security & Lineage</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);"><i class="fa-solid fa-shield-halved"></i> Security & RBAC Framework</div>
+          <ul class="card-list">
+            <li><strong>Role-Based Access:</strong> EV_ADMIN, EV_DATA_ENGINEER, EV_ANALYST, EV_MAINTENANCE_TECH.</li>
+            <li><strong>Column-Level Masking:</strong> Redacts driver PII & exact location coordinates for analyst roles.</li>
+            <li><strong>Encryption:</strong> AES-256 at rest, TLS 1.3 in transit across all endpoints.</li>
+            <li><strong>Time Travel & DR:</strong> 30-day Snowflake Time Travel and multi-region backup.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--accent-red);">
+          <div class="card-title" style="color: var(--accent-red);"><i class="fa-solid fa-clipboard-check"></i> Quality Matrix & Lineage</div>
+          <ul class="card-list">
+            <li><strong>Data Quality Rules:</strong> Traps invalid SOH (&lt;50% or &gt;100%) and routes to <code>GOVERNANCE.DATA_QUALITY_EXCEPTIONS</code>.</li>
+            <li><strong>Audit Logging:</strong> Logs every transaction, procedure run, and RPA step.</li>
+            <li><strong>End-to-End Lineage:</strong> Documented lineage from raw telemetry CSV to executive dashboard.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-9">
+        💡 <strong>Speaker Notes:</strong> Enterprise security is enforced via granular RBAC roles, column masking for privacy compliance, automated exception logging, and full auditability.
+      </div>
+    </div>
+
+    <!-- Slide 10: Conclusion -->
+    <div class="slide" data-slide="10">
+      <div class="slide-header">
+        <div class="slide-category">Summary & Roadmap</div>
+        <div class="slide-title">Project Accomplishments & Next Steps</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-trophy"></i> Key Accomplishments</div>
+          <ul class="card-list">
+            <li>End-to-End Automated Pipeline deployed and operational.</li>
+            <li>Interactive Web Application live at <code>http://localhost:3000</code>.</li>
+            <li>14% Energy Cost Optimization validated through tariff peak-shifting.</li>
+            <li>Complete documentation, ERD diagrams, and technical manuals deliverable.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-rocket"></i> Future Roadmap</div>
+          <ul class="card-list">
+            <li>Direct IoT Telemetry Streaming via Apache Kafka / AWS IoT Core.</li>
+            <li>Deep Learning (LSTM) Battery Cell Degradation Neural Network.</li>
+            <li>Vehicle-to-Grid (V2G) Energy Trading & Monetization.</li>
+            <li>Mobile App companion for depot drivers and maintenance technicians.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="speaker-notes" id="note-10">
+        💡 <strong>Speaker Notes:</strong> In summary, the platform is production-ready, yielding immediate financial returns while establishing a foundation for live IoT streaming and V2G energy monetization.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <button class="btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+    <div class="slide-dots" id="dots-container"></div>
+    <div style="font-weight: 600; font-size: 0.9rem; color: var(--accent-cyan);" id="slide-counter">Slide 1 / 10</div>
+    <button class="btn btn-primary" onclick="nextSlide()">Next <i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function initDots() {
+      const container = document.getElementById('dots-container');
+      container.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === currentSlide ? 'active' : ''}`;
+        dot.onclick = () => goToSlide(i);
+        container.appendChild(dot);
+      }
+    }
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      if (activeSlide) activeSlide.classList.add('active');
+
+      document.getElementById('slide-counter').innerText = `Slide ${currentSlide} / ${totalSlides}`;
+      initDots();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) showSlide(currentSlide - 1);
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+    }
+
+    function toggleNotes() {
+      const activeNotes = document.querySelector(`.slide[data-slide="${currentSlide}"] .speaker-notes`);
+      if (activeNotes) {
+        activeNotes.classList.toggle('visible');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    initDots();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1554 @@
+/* ============================================================================
+   EV FLEET CHARGING & BATTERY HEALTH ANALYTICS PLATFORM
+   World-Class Glassmorphism Dark Mode Theme (Microsoft Fabric & Neon Cyan Style)
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-dark: #040817;
+    --bg-surface: #091026;
+    --card-bg: rgba(15, 23, 42, 0.75);
+    --card-border: rgba(56, 189, 248, 0.25);
+    --card-hover: rgba(30, 41, 59, 0.9);
+    --accent-cyan: #00F0FF;
+    --accent-indigo: #6366F1;
+    --accent-teal: #14B8A6;
+    --accent-blue: #3B82F6;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --status-healthy: #10B981;
+    --status-warning: #F59E0B;
+    --status-critical: #EF4444;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --glass-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(ellipse at 50% 0%, #0F172A 0%, var(--bg-dark) 100%);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Header & Glass Navbar */
+.navbar {
+    background: rgba(9, 16, 38, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 1.1rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    animation: iconGlow 3s infinite alternate;
+}
+
+@keyframes iconGlow {
+    0% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); }
+    100% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.6); }
+}
+
+.brand-title h1 {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #FFFFFF 30%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-title p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* Telemetry Badge */
+.badge-live {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 0.45rem 1rem;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+
+.pulse-dot {
+    width: 9px;
+    height: 9px;
+    background-color: var(--accent-cyan);
+    border-radius: 50%;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 9px rgba(0, 240, 255, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+}
+
+/* Global Interactive Filter Bar */
+.filter-bar {
+    background-color: rgba(9, 16, 38, 0.9);
+    border-bottom: 1px solid var(--card-border);
+    padding: 0.85rem 2.5rem;
+    display: flex;
+    gap: 1.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.filter-select {
+    background-color: #0F172A;
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+/* Navigation Tabs */
+.tabs-header {
+    background-color: #0A1128;
+    padding: 0.6rem 2.5rem;
+    display: flex;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--card-border);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.8rem 1.35rem;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active {
+    color: var(--accent-cyan);
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(99, 102, 241, 0.12));
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+/* Main Layout & Grid */
+.main-container {
+    padding: 2rem 2.5rem;
+    flex: 1;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI Cards Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.35rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.4rem;
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
+    opacity: 0.6;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 14px 35px rgba(0, 240, 255, 0.2);
+}
+
+.kpi-header {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.kpi-subtext {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.kpi-subtext.positive { color: var(--status-healthy); }
+.kpi-subtext.negative { color: var(--status-critical); }
+
+/* Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+}
+
+.chart-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--glass-shadow);
+}
+
+.col-12 { grid-column: span 12; }
+.col-8 { grid-column: span 8; }
+.col-6 { grid-column: span 6; }
+.col-4 { grid-column: span 4; }
+
+@media (max-width: 992px) {
+    .col-8, .col-6, .col-4 { grid-column: span 12; }
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.chart-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    min-height: 300px;
+}
+
+/* Data Table Styling */
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    background-color: #0F172A;
+    border: 1px solid var(--card-border);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    width: 280px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.data-table th {
+    background-color: #0A1128;
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 0.9rem 1.1rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.data-table td {
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+    color: var(--text-primary);
+}
+
+.data-table tr:hover {
+    background-color: var(--card-hover);
+}
+
+.status-badge {
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-good { background: rgba(16, 185, 129, 0.15); color: var(--status-healthy); border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--status-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--status-critical); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* AI Assistant Console */
+.ai-console {
+    background: linear-gradient(135deg, #0A1128 0%, #172554 100%);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 18px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.ai-input-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.ai-input {
+    flex: 1;
+    background-color: #040817;
+    border: 1px solid var(--card-border);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+}
+
+.ai-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.ai-btn {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.ai-response {
+    background-color: rgba(4, 8, 23, 0.9);
+    border-left: 4px solid var(--accent-cyan);
+    padding: 1.35rem 1.6rem;
+    border-radius: 0 12px 12px 0;
+    margin-top: 1.35rem;
+    font-size: 0.98rem;
+    line-height: 1.8;
+    display: none;
+}
+
+/* ============================================================================
+   LIGHT THEME VARIABLES & OVERRIDES
+   ============================================================================ */
+[data-theme="light"] {
+    --bg-dark: #F1F5F9;
+    --bg-surface: #FFFFFF;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(148, 163, 184, 0.3);
+    --card-hover: rgba(241, 245, 249, 0.95);
+    --accent-cyan: #0284C7;
+    --accent-indigo: #4F46E5;
+    --accent-teal: #0D9488;
+    --accent-blue: #2563EB;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --status-healthy: #059669;
+    --status-warning: #D97706;
+    --status-critical: #DC2626;
+    --glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] body {
+    background: #F8FAFC;
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .navbar,
+[data-theme="light"] .filter-bar,
+[data-theme="light"] .tabs-header {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+[data-theme="light"] .brand-title h1 {
+    background: linear-gradient(90deg, #0F172A 30%, #0284C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .filter-select,
+[data-theme="light"] .search-input {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+[data-theme="light"] .data-table th {
+    background-color: #F1F5F9;
+    color: #334155;
+    border-bottom: 2px solid #E2E8F0;
+}
+
+[data-theme="light"] .data-table td {
+    border-bottom: 1px solid #E2E8F0;
+}
+
+[data-theme="light"] .data-table tbody tr:hover {
+    background-color: #F8FAFC;
+}
+
+[data-theme="light"] .ai-console {
+    background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%);
+    border-color: #0284C7;
+}
+
+[data-theme="light"] .ai-input {
+    background-color: #FFFFFF;
+    color: #0F172A;
+    border-color: #CBD5E1;
+}
+
+[data-theme="light"] .ai-response {
+    background-color: #F8FAFC;
+    color: #0F172A;
+}
+
+/* Theme Toggle Button */
+.theme-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 0.45rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+}
+
+.theme-btn:hover {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: var(--accent-cyan);
+    transform: translateY(-1px);
+}
+
+/* Export CSV Button */
+.export-btn {
+    background: linear-gradient(135deg, var(--accent-teal), #0D9488);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
+}
+
+/* Leaflet Map Styling Overrides */
+.leaflet-popup-content-wrapper {
+    background: #0F172A !important;
+    color: #F8FAFC !important;
+    border: 1px solid var(--accent-cyan) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 240, 255, 0.3) !important;
+}
+
+[data-theme="light"] .leaflet-popup-content-wrapper {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #0284C7 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-popup-tip {
+    background: #0F172A !important;
+}
+
+[data-theme="light"] .leaflet-popup-tip {
+    background: #FFFFFF !important;
+}
+
+.map-popup-card h4 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--accent-cyan);
+    margin-bottom: 0.4rem;
+}
+
+.map-popup-card p {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-secondary);
+}
+
+.map-popup-card .popup-stat {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+/* Battery Cell Pack Grid Styles */
+.cell-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.cell-btn {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 0.85rem 0.5rem;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cell-btn:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+}
+
+.cell-btn.active-cell {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 240, 255, 0.15);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.cell-btn.warning-cell {
+    border-color: var(--status-warning);
+    color: var(--status-warning);
+}
+
+.cell-btn.critical-cell {
+    border-color: var(--status-critical);
+    color: var(--status-critical);
+    animation: blinkAlert 1.5s infinite alternate;
+}
+
+@keyframes blinkAlert {
+    from { box-shadow: 0 0 5px rgba(239, 68, 68, 0.4); }
+    to { box-shadow: 0 0 15px rgba(239, 68, 68, 0.8); }
+}
+
+[data-theme="light"] .cell-btn {
+    background: #F1F5F9;
+    color: #0F172A;
+}
+
+/* ============================================================================
+   DUAL-ROLE INTERACTIVE PORTAL (COMPANY FLEET MANAGER VS EV DRIVER USER)
+   ============================================================================ */
+.role-switcher-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    padding: 0.3rem 0.4rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.role-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.25 ease;
+}
+
+.role-btn.active-role {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    color: #040817;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.role-banner {
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.1), rgba(99, 102, 241, 0.15));
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.role-banner-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================================================================
+   BATTERY HEALTH COCKPIT DISPLAY (MATCHING USER REFERENCE UI)
+   ============================================================================ */
+.cockpit-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(4, 8, 23, 0.98));
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.cockpit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #EF4444, #10B981, #FBBF24, #EF4444);
+}
+
+.cockpit-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.cockpit-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.cockpit-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+/* Segmented Battery Gauge Bar */
+.gauge-wrapper {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    padding: 0 1rem;
+}
+
+.gauge-pin-badge {
+    position: absolute;
+    top: -45px;
+    left: 55%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.95);
+    border: 2px solid #10B981;
+    color: #10B981;
+    padding: 0.3rem 0.9rem;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.2rem;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+}
+
+.gauge-pin-line {
+    position: absolute;
+    top: -12px;
+    left: 55%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9;
+}
+
+.gauge-bar-outer {
+    background: #020617;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    padding: 8px;
+    display: flex;
+    gap: 6px;
+    box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.9);
+}
+
+.gauge-section {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.gauge-block {
+    flex: 1;
+    height: 38px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.25s ease;
+}
+
+.gauge-section.low .gauge-block.active {
+    background: #EF4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+.gauge-section.optimal .gauge-block.active {
+    background: #10B981;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+}
+
+.gauge-section.high .gauge-block.active {
+    background: #EF4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+.gauge-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.gauge-label-low { color: #EF4444; }
+.gauge-label-opt { color: #10B981; }
+.gauge-label-high { color: #EF4444; }
+
+/* Cockpit 4 Metric Cards Grid */
+.cockpit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.cockpit-card-item {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cockpit-card-item:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(0, 240, 255, 0.2);
+}
+
+.cockpit-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent-cyan);
+}
+
+.cockpit-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.cockpit-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.cockpit-val {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-top: 0.2rem;
+}
+
+/* Image Reference Showcase Frame */
+.img-showcase-frame {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.img-showcase-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.img-showcase-frame:hover img {
+    transform: scale(1.02);
+}
+
+.img-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(4, 8, 23, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Live Stream Telemetry Controls */
+.stream-control-panel {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.live-ticker-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pulse-dot-green {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 10px #10B981;
+    animation: pulseGlow 1.2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+@media (max-width: 900px) {
+    .cockpit-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .bottom-nav-dock {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+/* ============================================================================
+   REALISTIC CAR DASHBOARD INFOTAINMENT & ALERTING HUD FRAME
+   ============================================================================ */
+.real-car-cockpit-wrapper {
+    position: relative;
+    background: radial-gradient(ellipse at 50% 0%, #151D30 0%, #080D1A 70%, #03060D 100%);
+    border-radius: 28px;
+    padding: 1.75rem;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), inset 0 0 2px rgba(255, 255, 255, 0.2);
+    border: 4px solid #1E2A40;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+}
+
+/* Carbon Fiber Bezel Frame */
+.car-bezel-frame {
+    position: relative;
+    background: linear-gradient(180deg, #0A0E1A 0%, #050812 100%);
+    border: 6px solid #162035;
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Interior Ambient Lighting strip below dashboard */
+.ambient-light-strip {
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 30%, var(--accent-blue) 70%, transparent 100%);
+    box-shadow: 0 0 20px var(--accent-cyan);
+    margin-bottom: 1.25rem;
+    border-radius: 2px;
+    transition: all 0.4s ease;
+}
+
+/* Realistic Car HUD Top Instrument Cluster Bar */
+.car-hud-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5, 9, 20, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 14px;
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-heading);
+}
+
+.hud-speedometer {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.hud-speedometer span {
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.hud-prnd {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #475569;
+}
+
+.hud-prnd .gear-active {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px var(--accent-cyan);
+}
+
+.hud-info-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+/* Car Driver Alert Notification Banner */
+.car-alert-banner {
+    background: rgba(16, 185, 129, 0.15);
+    border: 2px solid #10B981;
+    color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+}
+
+.car-alert-banner.alert-warning {
+    background: rgba(245, 158, 11, 0.18);
+    border-color: #F59E0B;
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+    animation: hazardFlash 1.2s infinite alternate;
+}
+
+.car-alert-banner.alert-danger {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #EF4444;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+    animation: hazardFlash 0.8s infinite alternate;
+}
+
+@keyframes hazardFlash {
+    0% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+    100% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 35px rgba(239, 68, 68, 0.8); }
+}
+
+.car-alert-text {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* Cockpit Mode Switcher Bar */
+.cockpit-view-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.view-mode-btn {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: var(--text-secondary);
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.view-mode-btn.active-mode {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(99, 102, 241, 0.25));
+    border-color: var(--accent-cyan);
+    color: #FFFFFF;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+/* ============================================================================
+   MODE A: HORIZONTAL SEGMENTED BATTERY BAR COCKPIT (user_battery_reference.jpg)
+   ============================================================================ */
+.cockpit-card {
+    background: linear-gradient(180deg, #0A0F1D 0%, #060913 100%);
+    border: 1px solid #1E293B;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 20px 50px rgba(0, 0, 0, 0.7);
+}
+
+.cockpit-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.cockpit-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: 8px;
+    color: #F1F5F9;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.cockpit-subtitle {
+    font-size: 0.95rem;
+    color: #94A3B8;
+    margin-top: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+/* Segmented Gauge Component */
+.gauge-wrapper {
+    position: relative;
+    margin: 3.5rem 0 2.5rem 0;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+/* Floating Badge & Stalk Pointer */
+.gauge-pin-badge {
+    position: absolute;
+    top: -48px;
+    transform: translateX(-50%);
+    background: rgba(9, 16, 30, 0.95);
+    border: 2px solid #10B981;
+    color: #10B981;
+    padding: 0.3rem 0.9rem;
+    border-radius: 12px;
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.5), inset 0 0 8px rgba(16, 185, 129, 0.2);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, color 0.3s, box-shadow 0.3s;
+    z-index: 10;
+}
+
+.gauge-pin-line {
+    position: absolute;
+    top: -14px;
+    bottom: -6px;
+    width: 3px;
+    transform: translateX(-50%);
+    background: #10B981;
+    box-shadow: 0 0 12px #10B981;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s, box-shadow 0.3s;
+    z-index: 9;
+}
+
+.gauge-pin-line::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #10B981;
+}
+
+/* Segmented Outer Bar Track */
+.gauge-bar-outer {
+    position: relative;
+    background: linear-gradient(180deg, #070B16 0%, #111827 100%);
+    border: 2px solid #1E293B;
+    border-radius: 20px;
+    padding: 8px 12px;
+    display: flex;
+    gap: 8px;
+    box-shadow: inset 0 6px 16px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6);
+    height: 64px;
+    align-items: center;
+}
+
+.gauge-section {
+    display: flex;
+    gap: 5px;
+}
+
+.gauge-section.low { flex: 4; }
+.gauge-section.optimal { flex: 12; }
+.gauge-section.high { flex: 4; }
+
+.gauge-block {
+    flex: 1;
+    height: 44px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.25s ease;
+}
+
+.gauge-section.low .gauge-block.active {
+    background: linear-gradient(180deg, #EF4444 0%, #B91C1C 100%);
+    border-color: #F87171;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+}
+
+.gauge-section.optimal .gauge-block.active {
+    background: linear-gradient(180deg, #34D399 0%, #059669 100%);
+    border-color: #6EE7B7;
+    box-shadow: 0 0 16px rgba(52, 211, 153, 0.85);
+}
+
+.gauge-section.high .gauge-block.active {
+    background: linear-gradient(180deg, #EF4444 0%, #B91C1C 100%);
+    border-color: #F87171;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+}
+
+.gauge-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding: 0 0.5rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.gauge-label-low { color: #EF4444; }
+.gauge-label-opt { color: #10B981; }
+.gauge-label-high { color: #EF4444; }
+
+/* Metric Cards Grid */
+.cockpit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.cockpit-card-item {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(9, 14, 26, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.cockpit-card-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 240, 255, 0.4);
+}
+
+.cockpit-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.cockpit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.cockpit-label {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.cockpit-val {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+/* Bottom Navigation Dock (user_battery_reference.jpg) */
+.bottom-nav-dock {
+    background: linear-gradient(180deg, rgba(11, 17, 32, 0.95) 0%, rgba(5, 8, 16, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    margin-top: 2.25rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.nav-dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.6rem 1.75rem;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #64748B;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.nav-dock-item .dock-icon {
+    font-size: 1.4rem;
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.nav-dock-item .dock-label {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.nav-dock-item:hover {
+    color: #94A3B8;
+    transform: translateY(-2px);
+}
+
+.nav-dock-item.active-dock {
+    background: linear-gradient(180deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+    border-color: #3B82F6;
+    color: #38BDF8;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.35), inset 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+.nav-dock-item.active-dock::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: #38BDF8;
+    border-radius: 3px;
+    box-shadow: 0 0 10px #38BDF8;
+}
+
+/* ============================================================================
+   MODE B: RADIAL ARCH INFOTAINMENT DASHBOARD (battery_dashboard.png)
+   ============================================================================ */
+.radial-cockpit-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .radial-cockpit-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.radial-gauge-card {
+    background: linear-gradient(180deg, #090E1A 0%, #040710 100%);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 20px;
+    padding: 1.75rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+}
+
+.radial-svg-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radial-center-content {
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.radial-health-label {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.radial-health-val {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #10B981;
+    line-height: 1;
+    margin: 0.3rem 0;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.radial-status-sub {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+}
+
+.radial-battery-icon {
+    font-size: 1.8rem;
+    color: #10B981;
+    margin-top: 0.4rem;
+    filter: drop-shadow(0 0 8px #10B981);
+}
+
+.radial-charts-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.sparkline-card {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(9, 14, 26, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.sparkline-title {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 0.75rem;
+}
+
+/* Steering Wheel Overlay Arc at bottom */
+.steering-wheel-arc {
+    height: 16px;
+    width: 60%;
+    margin: 1.5rem auto 0 auto;
+    border-top: 4px solid #334155;
+    border-radius: 50% 50% 0 0;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.8);
+}
+
+
+
+
+

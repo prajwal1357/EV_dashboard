@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2023.2">
+  <Nodes>
+    <!-- Node 1: Input Data Tool -->
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" SearchSubDirs="False" FileFormat="0" OutputFileName="">.\data\ev_fleet_charging_data.csv</File>
+          <FormatSpecificOptions>
+            <HeaderRow>True</HeaderRow>
+            <IgnoreWarnings>False</IgnoreWarnings>
+            <AllowShareWrite>Length</AllowShareWrite>
+            <ImportLine>1</ImportLine>
+            <FieldLen>254</FieldLen>
+            <SingleThreadRead>False</SingleThreadRead>
+            <IgnoreQuotes>DoubleQuotes</IgnoreQuotes>
+            <Delimeter>,</Delimeter>
+            <QuoteRecordBreak>False</QuoteRecordBreak>
+            <CodePage>65001</CodePage>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Input EV Fleet Kaggle CSV Data</Name>
+          <DefaultAnnotationText>ev_fleet_charging_data.csv</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+
+    <!-- Node 2: Select Tool -->
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="174" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="Vehicle_ID" selected="True" type="V_String" size="50" />
+            <SelectField field="Battery_Capacity" selected="True" type="Double" />
+            <SelectField field="Battery_State_of_Health" selected="True" type="Double" />
+            <SelectField field="Charging_Start_Time" selected="True" type="DateTime" />
+            <SelectField field="Charging_End_Time" selected="True" type="DateTime" />
+            <SelectField field="Energy_Consumed" selected="True" type="Double" />
+            <SelectField field="Distance_Travelled" selected="True" type="Double" />
+            <SelectField field="Charging_Cost" selected="True" type="Double" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Select &amp; Data Types</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+
+    <!-- Node 3: Data Cleansing Tool -->
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Cleansing.Cleansing">
+        <Position x="294" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RemoveUnwantedCharacters value="True" />
+          <RemoveTabs value="True" />
+          <RemoveLineBreaks value="True" />
+          <RemoveDuplicateWhitespaces value="True" />
+          <RemoveLeadingAndTrailingWhitespaces value="True" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Data Cleansing</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCleansing" />
+    </Node>
+
+    <!-- Node 4: Formula Tool (Missing Handling & Metrics) -->
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="414" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF ISNULL([Temperature]) THEN 22.5 ELSE [Temperature] ENDIF" field="Temperature" type="Double" />
+            <FormulaField expression="IF ISNULL([Distance_Travelled]) THEN [Energy_Consumed] * 3.8 ELSE [Distance_Travelled] ENDIF" field="Distance_Travelled" type="Double" />
+            <FormulaField expression="([Energy_Consumed] / [Distance_Travelled]) * 100" field="Efficiency_kWh_100km" type="Double" />
+            <FormulaField expression="IF [Battery_State_of_Health] &gt;= 90 THEN 'Healthy' ELSEIF [Battery_State_of_Health] &gt;= 80 THEN 'Moderate' ELSE 'Critical' ENDIF" field="Degradation_Status" type="V_String" size="20" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Formula (Missing Value Imputation &amp; Calculations)</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+
+    <!-- Node 5: Filter Tool -->
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+        <Position x="534" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[Battery_State_of_Health] &gt;= 50 AND [Energy_Consumed] &gt; 0</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Filter Invalid Data</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+    </Node>
+
+    <!-- Node 6: Sort Tool -->
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="654" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="Fleet_ID" order="Ascending" />
+            <Field field="Vehicle_ID" order="Ascending" />
+            <Field field="Charging_Start_Time" order="Descending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Sort Records</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+
+    <!-- Node 7: Unique Tool -->
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="774" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="Vehicle_ID" />
+            <Field field="Charging_Start_Time" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Unique Vehicle Sessions</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
+    </Node>
+
+    <!-- Node 8: Summarize Tool -->
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Summarize.Summarize">
+        <Position x="894" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Fleet_ID" action="GroupBy" rename="Fleet_ID" />
+            <SummarizeField field="Battery_State_of_Health" action="Avg" rename="Avg_Fleet_SOH" />
+            <SummarizeField field="Energy_Consumed" action="Sum" rename="Total_Fleet_Energy" />
+            <SummarizeField field="Charging_Cost" action="Sum" rename="Total_Fleet_Cost" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Summarize Fleet Level Metrics</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+
+    <!-- Node 9: CrossTab Tool -->
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
+        <Position x="1014" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <GroupFields>
+            <Field field="Fleet_ID" />
+          </GroupFields>
+          <HeaderField field="Charging_Type" />
+          <DataField field="Energy_Consumed" />
+          <Methods>
+            <Method method="Sum" />
+          </Methods>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>CrossTab Pivot Charging Types</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
+    </Node>
+
+    <!-- Node 10: Output Data Tool -->
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="1134" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="0" MaxRecords="">.\data\cleaned_ev_fleet_charging_data.csv</File>
+          <FormatSpecificOptions>
+            <LineEndStyle>CRLF</LineEndStyle>
+            <Delimeter>,</Delimeter>
+            <ForceQuotes>False</ForceQuotes>
+            <HeaderRow>True</HeaderRow>
+            <CodePage>65001</CodePage>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output Cleaned CSV for Snowflake</Name>
+          <DefaultAnnotationText>cleaned_ev_fleet_charging_data.csv</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="5" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="True" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="6" Connection="Output" />
+      <Destination ToolID="7" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Unique" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Unique" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Unique" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+  </Connections>
+</AlteryxDocument>

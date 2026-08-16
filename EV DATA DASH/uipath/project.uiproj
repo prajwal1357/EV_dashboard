@@ -1,0 +1,6 @@
+{
+  "Name": "EV_Fleet_Automation_Pipeline",
+  "ProjectType": "Process",
+  "Description": "End-to-End EV Fleet Ingestion, Snowflake ETL execution, Power BI refresh & Email Dispatch Automation",
+  "MainFile": "Main.xaml"
+}

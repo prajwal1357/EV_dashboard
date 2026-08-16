@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Fleet Charging & Battery Health Analytics Platform - Web Application</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Leaflet.js Interactive Map Engine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- Header Glass Navbar -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="brand-icon">⚡</div>
+            <div class="brand-title">
+                <h1>EV Fleet Analytics Platform</h1>
+                <p>Enterprise Battery Health, Telemetry Analytics & AI Optimization (Team EcoPulse)</p>
+            </div>
+        </div>
+        <div class="nav-controls">
+            <!-- Dual-Role Interactive Persona Switcher -->
+            <div class="role-switcher-container">
+                <button id="roleCompanyBtn" class="role-btn active-role"
+                    title="Switch to Enterprise Fleet Manager Dashboard">
+                    🏢 Enterprise Admin
+                </button>
+                <button id="roleDriverBtn" class="role-btn" title="Switch to EV Driver Vehicle Cockpit Dashboard">
+                    🚗 EV Driver User
+                </button>
+            </div>
+            <button id="themeToggleBtn" class="theme-btn" title="Toggle Light/Dark Theme">
+                <span class="theme-icon">🌙</span> <span class="theme-text">Dark Mode</span>
+            </button>
+            <div id="liveStreamBadge" class="badge-live">
+                <span class="pulse-dot"></span> Live Telemetry Active (5,000 Real-Time Ticks)
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Interactive Filter Control Bar -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label for="fleetSelect"><strong>Fleet Name:</strong></label>
+            <select id="fleetSelect" class="filter-select">
+                <option value="ALL">All Fleets (5,000 Records)</option>
+                <option value="Premium Fleet">Premium Fleet</option>
+                <option value="Green Mobility">Green Mobility</option>
+                <option value="Express Logistics">Express Logistics</option>
+                <option value="EcoPulse">EcoPulse</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="citySelect"><strong>City Hub:</strong></label>
+            <select id="citySelect" class="filter-select">
+                <option value="ALL">All Cities</option>
+                <option value="Bengaluru">Bengaluru</option>
+                <option value="Mangalore">Mangalore</option>
+                <option value="Belagavi">Belagavi</option>
+                <option value="Mysuru">Mysuru</option>
+                <option value="Hubballi">Hubballi</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="modelSelect"><strong>Vehicle Model:</strong></label>
+            <select id="modelSelect" class="filter-select">
+                <option value="ALL">All EV Models</option>
+                <option value="Tata Nexon EV">Tata Nexon EV</option>
+                <option value="Kia EV6">Kia EV6</option>
+                <option value="Mahindra XUV400">Mahindra XUV400</option>
+                <option value="MG ZS EV">MG ZS EV</option>
+                <option value="Hyundai Ioniq 5">Hyundai Ioniq 5</option>
+                <option value="BYD Atto 3">BYD Atto 3</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="statusSelect"><strong>Battery Health:</strong></label>
+            <select id="statusSelect" class="filter-select">
+                <option value="ALL">All Statuses</option>
+                <option value="Healthy">Healthy (SOH ≥ 90%)</option>
+                <option value="Moderate">Moderate (80-89%)</option>
+                <option value="Critical">Critical (SOH < 80%)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="typeSelect"><strong>Charging Type:</strong></label>
+            <select id="typeSelect" class="filter-select">
+                <option value="ALL">All Charging Types</option>
+                <option value="Fast Charge">Fast Charge</option>
+                <option value="Normal Charge">Normal Charge</option>
+                <option value="Ultra Fast DC">Ultra Fast DC</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Router Tabs Navigation -->
+    <nav class="tabs-header">
+        <button class="tab-btn active" data-tab="tab-simulator">🏎️ EV Car Cockpit</button>
+        <button class="tab-btn" data-tab="tab-executive">📊 Executive Dashboard</button>
+        <button class="tab-btn" data-tab="tab-battery">🔋 Battery Health</button>
+        <button class="tab-btn" data-tab="tab-map">🗺️ Fleet Location Map</button>
+        <button class="tab-btn" data-tab="tab-charging">🔌 Charging Analytics</button>
+        <button class="tab-btn" data-tab="tab-fleet">🚛 Fleet Performance</button>
+        <button class="tab-btn" data-tab="tab-cost">💰 Cost Analysis</button>
+        <button class="tab-btn" data-tab="tab-ai">🤖 AI Dashboard</button>
+        <button class="tab-btn" data-tab="tab-governance">🛡️ Data Governance</button>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <main class="main-container">
+
+        <!-- PAGE 1: EXECUTIVE DASHBOARD -->
+        <section id="tab-executive" class="tab-content">
+            <div
+                style="background: rgba(0, 240, 255, 0.08); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <div>🏎️ <strong>EV Driver & Battery Cockpit Available:</strong> Real-time 55% battery health gauge
+                    (`user_battery_reference.jpg`) & 270° radial arch infotainment display (`battery_dashboard.png`).
+                </div>
+                <button onclick="document.querySelector('[data-tab=\'tab-simulator\']').click()" class="ai-btn"
+                    style="padding: 0.4rem 0.9rem; font-size: 0.82rem; background: var(--accent-cyan); color: #040817; font-weight: 700;">🏎️
+                    View EV Car Cockpit</button>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">Total Charging Sessions</div>
+                    <div id="kpiTotalCount" class="kpi-value">5,000</div>
+                    <div class="kpi-subtext positive">User Dataset Connected</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">Healthy Batteries (SOH >= 90%)</div>
+                    <div class="kpi-value" style="color: var(--status-healthy);">4,120</div>
+                    <div class="kpi-subtext positive">82.4% of Total Fleet</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">Critical Batteries (SOH < 80%)</div>
+                            <div class="kpi-value" style="color: var(--status-critical);">165</div>
+                            <div class="kpi-subtext negative">⚠ Immediate inspection required</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">Average Battery SOH</div>
+                        <div id="kpiAvgSOH" class="kpi-value">93.8%</div>
+                        <div class="kpi-subtext positive">Target: > 90.0%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">Total Energy Consumed</div>
+                        <div id="kpiTotalEnergy" class="kpi-value">184.2 MWh</div>
+                        <div class="kpi-subtext">5,000 Telemetry Logs</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">Total Charging Cost</div>
+                        <div id="kpiTotalCost" class="kpi-value">₹1,842,500</div>
+                        <div class="kpi-subtext positive">↓ 6.8% Optimized via AI</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card col-8">
+                        <div class="chart-header">
+                            <div class="chart-title">Daily Energy Consumption (MWh) vs Charging Cost Trend</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chartDailyTrend"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card col-4">
+                        <div class="chart-header">
+                            <div class="chart-title">Battery SOH Category Distribution</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chartSOHDist"></canvas>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- PAGE MAP: FLEET LOCATION MAP -->
+        <section id="tab-map" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">Active City Hubs</div>
+                    <div class="kpi-value" style="color: var(--accent-cyan);">5 Cities</div>
+                    <div class="kpi-subtext">Bengaluru, Mangalore, Belagavi, Mysuru, Hubballi</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">Connected Charging Depots</div>
+                    <div class="kpi-value" style="color: var(--accent-teal);">18 Hubs</div>
+                    <div class="kpi-subtext positive">100% Operational Status</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">Total Active Charging Ports</div>
+                    <div class="kpi-value" style="color: var(--accent-indigo);">142 Fast Chargers</div>
+                    <div class="kpi-subtext positive">84% Occupancy Rate</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card col-12">
+                    <div class="chart-header" style="justify-content: space-between;">
+                        <div class="chart-title">🗺️ Real-Time EV Fleet City Hubs & Telemetry Map (Karnataka, India)
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">Click on any hub marker to filter
+                            fleet analytics</div>
+                    </div>
+                    <div id="fleetMap"
+                        style="height: 520px; width: 100%; border-radius: 12px; border: 1px solid var(--card-border); z-index: 1;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE SIMULATOR: EV CAR COCKPIT & BATTERY SIMULATOR -->
+        <section id="tab-simulator" class="tab-content active">
+
+            <!-- Dual-Role Status Banner -->
+            <div id="roleBanner" class="role-banner">
+                <div class="role-banner-title">
+                    <span id="roleBannerIcon">🏢</span>
+                    <span id="roleBannerText">Enterprise Fleet Manager Mode: Monitoring 5,000 EV Fleet Telemetry &
+                        Battery Health Logs</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="btnBookDepot" class="ai-btn"
+                        style="padding: 0.4rem 0.8rem; font-size: 0.82rem; background: var(--accent-indigo);">🚗 Book
+                        Depot Fast Charger</button>
+                    <button id="btnDispatchTicket" class="ai-btn"
+                        style="padding: 0.4rem 0.8rem; font-size: 0.82rem; background: var(--status-warning);">🏢
+                        Dispatch Maintenance Ticket</button>
+                </div>
+            </div>
+
+            <!-- 0. HIGH-TECH REAL-TIME BATTERY HEALTH COCKPIT DISPLAY (REAL CAR DASHBOARD FRAME) -->
+            <div class="real-car-cockpit-wrapper">
+
+                <!-- Top Instrument Cluster HUD Bar -->
+                <div class="car-hud-bar">
+                    <div class="hud-speedometer">
+                        <span style="font-size: 1.2rem; color: var(--accent-cyan);">⚡</span> 68 <span>KM/H</span>
+                    </div>
+                    <div class="hud-prnd">
+                        <span>P</span> <span>R</span> <span>N</span> <span class="gear-active">D</span>
+                    </div>
+                    <div class="hud-info-right">
+                        <span>🕒 10:52 AM</span>
+                        <span>🌡️ 28 °C Ambient</span>
+                        <span>📍 Bengaluru Hub Route</span>
+                    </div>
+                </div>
+
+                <!-- Active Car Driver Alert Banner -->
+                <div id="carAlertBanner" class="car-alert-banner">
+                    <div class="car-alert-text">
+                        <span id="carAlertIcon" style="font-size: 1.4rem;">🟢</span>
+                        <span id="carAlertMsg"><strong>VEHICLE STATUS NOMINAL:</strong> 320 km Range Available. Battery
+                            State of Health at 88% (Optimal).</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        <button class="preset-btn cell-btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;"
+                            onclick="triggerCarAlert('LOW_BATTERY')">🚨 Low Battery Alert</button>
+                        <button class="preset-btn cell-btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;"
+                            onclick="triggerCarAlert('OVERHEAT')">⚠️ Overheat Alert</button>
+                        <button class="preset-btn cell-btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;"
+                            onclick="triggerCarAlert('SERVICE')">🛠️ Service Alert</button>
+                        <button class="preset-btn cell-btn" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;"
+                            onclick="triggerCarAlert('RESET')">🔄 Reset HUD</button>
+                    </div>
+                </div>
+
+                <!-- Carbon Fiber Screen Bezel Frame -->
+                <div id="carBezelFrame" class="car-bezel-frame">
+                    <!-- Interior Ambient Lighting Strip -->
+                    <div id="ambientLightStrip" class="ambient-light-strip"></div>
+
+                    <!-- Dashboard Cockpit View Mode Switcher -->
+                    <div class="cockpit-view-switcher">
+                        <button id="viewModeBarBtn" class="view-mode-btn active-mode"
+                            onclick="switchCockpitView('BAR')">
+                            🎛️ Horizontal Battery Health Bar (user_battery_reference.jpg)
+                        </button>
+                        <button id="viewModeRadialBtn" class="view-mode-btn" onclick="switchCockpitView('RADIAL')">
+                            🎯 Radial Arch Infotainment GUI (battery_dashboard.png)
+                        </button>
+                    </div>
+
+                    <!-- ================================================================= -->
+                    <!-- MODE A: HORIZONTAL SEGMENTED BATTERY BAR (user_battery_reference.jpg) -->
+                    <!-- ================================================================= -->
+                    <div id="cockpitViewBar" class="cockpit-card" style="margin-bottom: 0;">
+                        <div class="cockpit-header">
+                            <div class="cockpit-title">BATTERY HEALTH</div>
+                            <div class="cockpit-subtitle">Real-time battery status and performance</div>
+                        </div>
+
+                        <!-- Interactive Segmented Range Bar -->
+                        <div class="gauge-wrapper">
+                            <!-- Dynamic Pin Marker (Badge + Vertical Stalk Line) -->
+                            <div id="gaugePinBadge" class="gauge-pin-badge" style="left: 55%;">55%</div>
+                            <div id="gaugePinLine" class="gauge-pin-line" style="left: 55%;"></div>
+
+                            <!-- Outer Capsule Bar Container -->
+                            <div class="gauge-bar-outer">
+                                <!-- Low Range (Red, 5 Blocks) -->
+                                <div class="gauge-section low">
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                </div>
+
+                                <!-- Optimal Range (Green, 10 Blocks) -->
+                                <div class="gauge-section optimal">
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block active"></div>
+
+                                    <div class="gauge-block active"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                </div>
+
+                                <!-- High Range / Overcharge (Red, 5 Blocks) -->
+                                <div class="gauge-section high">
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                    <div class="gauge-block"></div>
+                                </div>
+                            </div>
+
+                            <!-- Range Zone Labels (exact match to reference) -->
+                            <div class="gauge-labels">
+                                <span class="gauge-label-low">Low Range</span>
+                                <span class="gauge-label-opt">Optimal Range</span>
+                                <span class="gauge-label-high">High Range</span>
+                            </div>
+                        </div>
+
+                        <!-- 4 Metric Cards (user_battery_reference.jpg) -->
+                        <div class="cockpit-grid">
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-icon-wrapper"
+                                    style="color: #10B981; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                    🛡️
+                                </div>
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">BATTERY STATUS</span>
+                                    <span id="cockpitStatusVal" class="cockpit-val" style="color: #10B981;">Good</span>
+                                </div>
+                            </div>
+
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-icon-wrapper"
+                                    style="color: #38BDF8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3);">
+                                    📈
+                                </div>
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">ESTIMATED RANGE</span>
+                                    <span id="cockpitRangeVal" class="cockpit-val">320 km</span>
+                                </div>
+                            </div>
+
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-icon-wrapper"
+                                    style="color: #818CF8; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3);">
+                                    ⏱️
+                                </div>
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">CHARGE CYCLES</span>
+                                    <span id="cockpitCyclesVal" class="cockpit-val">412</span>
+                                </div>
+                            </div>
+
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-icon-wrapper"
+                                    style="color: #F59E0B; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3);">
+                                    🌡️
+                                </div>
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">BATTERY TEMP</span>
+                                    <span id="cockpitTempVal" class="cockpit-val" style="color: #F59E0B;">28 °C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Navigation Dock (user_battery_reference.jpg) -->
+                        <div class="bottom-nav-dock">
+                            <div class="nav-dock-item" onclick="selectDockTab(this, 'HOME')">
+                                <span class="dock-icon">🏠</span>
+                                <span class="dock-label">HOME</span>
+                            </div>
+                            <div class="nav-dock-item" onclick="selectDockTab(this, 'CHARGE')">
+                                <span class="dock-icon">⚡</span>
+                                <span class="dock-label">CHARGE</span>
+                            </div>
+                            <div class="nav-dock-item active-dock" onclick="selectDockTab(this, 'HEALTH')">
+                                <span class="dock-icon">🧰</span>
+                                <span class="dock-label">HEALTH</span>
+                            </div>
+                            <div class="nav-dock-item" onclick="selectDockTab(this, 'STATS')">
+                                <span class="dock-icon">📊</span>
+                                <span class="dock-label">STATS</span>
+                            </div>
+                            <div class="nav-dock-item" onclick="selectDockTab(this, 'SETTINGS')">
+                                <span class="dock-icon">⚙️</span>
+                                <span class="dock-label">SETTINGS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================================================================= -->
+                    <!-- MODE B: RADIAL ARCH INFOTAINMENT DASHBOARD (battery_dashboard.png) -->
+                    <!-- ================================================================= -->
+                    <div id="cockpitViewRadial" class="cockpit-card" style="display: none; margin-bottom: 0;">
+                        <!-- Top Infotainment Status Bar -->
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 0.6rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--card-border);">
+                            <div
+                                style="font-family: var(--font-heading); font-weight: 800; font-size: 1.2rem; color: var(--accent-cyan);">
+                                ⚡ EV
+                            </div>
+                            <div style="font-size: 0.9rem; color: #E2E8F0; font-weight: 600;">
+                                10:45 AM &nbsp;|&nbsp; 21°C
+                            </div>
+                            <div
+                                style="font-size: 0.85rem; font-weight: 700; color: #EF4444; text-transform: uppercase;">
+                                Drive Mode: <span
+                                    style="background: rgba(239,68,68,0.2); padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid #EF4444;">SPORT</span>
+                            </div>
+                        </div>
+
+                        <div class="radial-cockpit-grid">
+                            <!-- 270 Radial Arch SVG Meter -->
+                            <div class="radial-gauge-card">
+                                <div class="radial-svg-container">
+                                    <svg width="280" height="280" viewBox="0 0 280 280">
+                                        <!-- Outer Circular Ticks Background -->
+                                        <circle cx="140" cy="140" r="120" fill="none" stroke="rgba(255,255,255,0.08)"
+                                            stroke-width="2" stroke-dasharray="4 6" />
+
+                                        <!-- Low Range Arc (0 - 20%) Red -->
+                                        <path d="M 55 225 A 110 110 0 0 1 45 150" fill="none" stroke="#EF4444"
+                                            stroke-width="16" stroke-linecap="round" />
+                                        <!-- Optimal Range Arc (21 - 100%) Green Glow -->
+                                        <path id="radialOptimalArc" d="M 50 140 A 110 110 0 1 1 225 225" fill="none"
+                                            stroke="#10B981" stroke-width="18" stroke-linecap="round"
+                                            style="filter: drop-shadow(0 0 12px #10B981);" />
+
+                                        <!-- Numeric Ticks Labels -->
+                                        <text x="35" y="240" fill="#EF4444" font-size="11" font-weight="bold">0</text>
+                                        <text x="25" y="160" fill="#10B981" font-size="11" font-weight="bold">20</text>
+                                        <text x="45" y="85" fill="#10B981" font-size="11" font-weight="bold">40</text>
+                                        <text x="100" y="45" fill="#10B981" font-size="11" font-weight="bold">60</text>
+                                        <text x="170" y="45" fill="#10B981" font-size="11" font-weight="bold">80</text>
+                                        <text x="225" y="85" fill="#10B981" font-size="11" font-weight="bold">100</text>
+                                        <text x="245" y="160" fill="#10B981" font-size="11"
+                                            font-weight="bold">120</text>
+                                        <text x="235" y="240" fill="#10B981" font-size="11"
+                                            font-weight="bold">140</text>
+                                    </svg>
+
+                                    <div class="radial-center-content">
+                                        <span class="radial-health-label">BATTERY HEALTH</span>
+                                        <span id="radialPercentVal" class="radial-health-val">88%</span>
+                                        <span id="radialStatusVal" class="radial-status-sub">STATUS: OPTIMAL</span>
+                                        <div class="radial-battery-icon">⚡🔋</div>
+                                    </div>
+                                </div>
+
+                                <!-- Range Zone Annotations -->
+                                <div
+                                    style="display: flex; justify-content: space-between; width: 100%; margin-top: 1rem; font-size: 0.8rem; font-weight: 700;">
+                                    <span style="color: #EF4444;">Low Range (0 - 20%)</span>
+                                    <span style="color: #10B981;">Optimal Range (21 - 100%)</span>
+                                    <span style="color: #F59E0B;">High Range (0 - 100%)</span>
+                                </div>
+                            </div>
+
+                            <!-- Sparklines Column -->
+                            <div class="radial-charts-column">
+                                <div class="sparkline-card">
+                                    <div class="sparkline-title">⚡ Power Flow (kW)</div>
+                                    <div style="height: 100px;">
+                                        <canvas id="chartPowerFlow"></canvas>
+                                    </div>
+                                </div>
+                                <div class="sparkline-card">
+                                    <div class="sparkline-title">🌡️ Temperature Trend (°C)</div>
+                                    <div style="height: 100px;">
+                                        <canvas id="chartTempTrend"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom 5 KPI Cards (battery_dashboard.png) -->
+                        <div class="cockpit-grid" style="margin-top: 1.5rem;">
+                            <div class="cockpit-card-item" style="border-color: #10B981;">
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">BATTERY STATUS</span>
+                                    <span style="color: #10B981; font-weight: 800; font-size: 1.3rem;">GOOD</span>
+                                    <span style="font-size: 0.72rem; color: #10B981;">SYSTEM CHECK: PASSED</span>
+                                </div>
+                            </div>
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">EST. RANGE</span>
+                                    <span id="radialEstRangeVal"
+                                        style="color: #38BDF8; font-weight: 800; font-size: 1.3rem;">320 km</span>
+                                    <span id="radialSubCharge" style="font-size: 0.72rem; color: #94A3B8;">88%
+                                        CHARGE</span>
+                                </div>
+                            </div>
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">CHARGE CYCLES</span>
+                                    <span style="color: #F8FAFC; font-weight: 800; font-size: 1.3rem;">412</span>
+                                    <span style="font-size: 0.72rem; color: #94A3B8;">🔄 Normal Cycle</span>
+                                </div>
+                            </div>
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">BATTERY TEMP.</span>
+                                    <span id="radialTempVal"
+                                        style="color: #F59E0B; font-weight: 800; font-size: 1.3rem;">28°C</span>
+                                    <span style="font-size: 0.72rem; color: #10B981;">🌡️ Nominal Range</span>
+                                </div>
+                            </div>
+                            <div class="cockpit-card-item">
+                                <div class="cockpit-info">
+                                    <span class="cockpit-label">AVG. CONSUMPTION</span>
+                                    <span style="color: var(--accent-teal); font-weight: 800; font-size: 1.3rem;">15.4
+                                        <span style="font-size: 0.8rem;">kWh/100km</span></span>
+                                    <span style="font-size: 0.72rem; color: #10B981;">📉 Eco Efficient</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Infotainment Bottom Nav Bar -->
+                        <div
+                            style="display: flex; justify-content: center; gap: 3rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: #64748B;">
+                            <span style="cursor: pointer;">Navigation</span>
+                            <span style="cursor: pointer; color: var(--accent-cyan);">Energy</span>
+                            <span
+                                style="cursor: pointer; color: #38BDF8; border-bottom: 2px solid #38BDF8; padding-bottom: 0.2rem;">Health</span>
+                        </div>
+                    </div>
+
+                    <!-- Shared Interactive Controls & Live Telemetry Waveform -->
+                    <div style="margin-top: 1.5rem;">
+                        <!-- Live Stream Controls & Preset Buttons -->
+                        <div class="stream-control-panel" style="margin-bottom: 1.25rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                                <button id="btnToggleLiveStream" class="ai-btn"
+                                    style="background: var(--status-healthy); padding: 0.55rem 1.2rem; font-weight: 700;">
+                                    ▶ START REAL-TIME TELEMETRY STREAM
+                                </button>
+                                <button id="btnSimFastCharge" class="ai-btn"
+                                    style="background: var(--accent-cyan); color: #040817; padding: 0.55rem 1rem;">
+                                    ⚡ Fast Charge (150kW)
+                                </button>
+                                <button id="btnSimOverheat" class="ai-btn"
+                                    style="background: var(--status-critical); padding: 0.55rem 1rem;">
+                                    ⚠️ Simulate Thermal Stress
+                                </button>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <span
+                                    style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Presets:</span>
+                                <button class="preset-btn cell-btn" onclick="setCockpitPercentage(55)">55% Low</button>
+                                <button class="preset-btn cell-btn" onclick="setCockpitPercentage(78)">78%
+                                    Alert</button>
+                                <button class="preset-btn cell-btn active-cell" onclick="setCockpitPercentage(88)">88%
+                                    Optimal</button>
+                                <button class="preset-btn cell-btn" onclick="setCockpitPercentage(98)">98% Full</button>
+                            </div>
+                        </div>
+
+                        <!-- Live Interactive Slider Control -->
+                        <div
+                            style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 14px; border: 1px solid var(--card-border); margin-bottom: 1.5rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                <span>Interactive State of Health (SOH) / SOC Live Adjuster:</span>
+                                <strong id="sliderPercentVal" style="color: var(--accent-cyan); font-size: 1.1rem;">55%
+                                    Good Status</strong>
+                            </div>
+                            <input type="range" id="cockpitPercentSlider" min="15" max="100" value="55" step="1"
+                                style="width: 100%; cursor: pointer;">
+                        </div>
+
+                        <!-- Real-Time Telemetry Waveform Chart -->
+                        <div
+                            style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 14px; border: 1px solid var(--card-border);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                <div
+                                    style="font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--accent-cyan);">
+                                    📈 Real-Time Battery Voltage (V) & Temperature (°C) Telemetry Waveform
+                                </div>
+                                <div class="live-ticker-bar">
+                                    <div class="ticker-item"><span class="pulse-dot-green"></span> Live 1,000ms Ticker
+                                    </div>
+                                    <div class="ticker-item">Voltage: <strong id="liveVoltsVal"
+                                            style="color: var(--accent-cyan);">398 V</strong></div>
+                                    <div class="ticker-item">Current: <strong id="liveAmpsVal"
+                                            style="color: var(--accent-teal);">124 A</strong></div>
+                                </div>
+                            </div>
+                            <div style="height: 200px; width: 100%;">
+                                <canvas id="chartLiveTelemetry"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Steering Wheel Overlay Arc at Bottom -->
+                <div class="steering-wheel-arc"></div>
+            </div>
+
+            <!-- Reference Images Gallery Showcase Cards -->
+            <div class="charts-grid" style="margin-bottom: 2rem;">
+                <div class="chart-card col-12">
+                    <div class="chart-header">
+                        <div class="chart-title">🖼️ Reference Design Blueprint Images (Embedded from Code Repository)
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">Replicated UI Specs:
+                            user_battery_reference.jpg, battery_dashboard.png & user_infotainment_reference.jpg</div>
+                    </div>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <!-- Image 1: user_battery_reference.jpg -->
+                        <div class="img-showcase-frame"
+                            style="border: 2px solid var(--accent-cyan); border-radius: 14px; overflow: hidden; position: relative;">
+                            <img src="user_battery_reference.jpg" alt="Battery Health Horizontal Bar Reference"
+                                style="width: 100%; height: 260px; object-fit: cover; display: block;">
+                            <span class="img-badge"
+                                style="position: absolute; bottom: 10px; left: 10px; background: rgba(9,16,38,0.9); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: #10B981; border: 1px solid #10B981;">
+                                📷 user_battery_reference.jpg (55% Horizontal Bar)
+                            </span>
+                        </div>
+
+                        <!-- Image 2: battery_dashboard.png -->
+                        <div class="img-showcase-frame"
+                            style="border: 2px solid var(--accent-indigo); border-radius: 14px; overflow: hidden; position: relative;">
+                            <img src="battery_dashboard.png" alt="Battery Dashboard Radial Arch Reference"
+                                style="width: 100%; height: 260px; object-fit: cover; display: block;">
+                            <span class="img-badge"
+                                style="position: absolute; bottom: 10px; left: 10px; background: rgba(9,16,38,0.9); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: var(--accent-cyan); border: 1px solid var(--accent-cyan);">
+                                📷 battery_dashboard.png (88% Radial Arch GUI)
+                            </span>
+                        </div>
+
+                        <!-- Image 3: user_infotainment_reference.jpg -->
+                        <div class="img-showcase-frame"
+                            style="border: 2px solid var(--accent-teal); border-radius: 14px; overflow: hidden; position: relative;">
+                            <img src="user_infotainment_reference.jpg" alt="User Infotainment Cockpit Reference"
+                                style="width: 100%; height: 260px; object-fit: cover; display: block;">
+                            <span class="img-badge"
+                                style="position: absolute; bottom: 10px; left: 10px; background: rgba(9,16,38,0.9); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: var(--accent-teal); border: 1px solid var(--accent-teal);">
+                                📷 user_infotainment_reference.jpg (In-Car Cockpit)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid" style="margin-bottom: 1.5rem;">
+                <!-- 1. Interactive 8-Cell Battery Module Visualizer -->
+                <div class="chart-card col-6">
+                    <div class="chart-header">
+                        <div class="chart-title">🔋 Interactive Battery Pack Cell Diagnostics (EV Cell Pack #B-409)
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Click on any individual battery cell to inspect real-time voltage, temperature, internal
+                        resistance, and degradation state.
+                    </p>
+
+                    <div id="cellGrid" class="cell-grid">
+                        <button class="cell-btn active-cell" data-cell="1">Cell #1 (3.72V)</button>
+                        <button class="cell-btn" data-cell="2">Cell #2 (3.71V)</button>
+                        <button class="cell-btn" data-cell="3">Cell #3 (3.69V)</button>
+                        <button class="cell-btn warning-cell" data-cell="4">Cell #4 (3.48V)</button>
+                        <button class="cell-btn" data-cell="5">Cell #5 (3.73V)</button>
+                        <button class="cell-btn" data-cell="6">Cell #6 (3.70V)</button>
+                        <button class="cell-btn critical-cell" data-cell="7">Cell #7 (3.12V)</button>
+                        <button class="cell-btn" data-cell="8">Cell #8 (3.72V)</button>
+                    </div>
+
+                    <div id="cellDetailPanel" class="cell-detail-panel"
+                        style="margin-top: 1.2rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 10px; border: 1px solid var(--card-border);">
+                        <h4 id="cellTitle" style="color: var(--accent-cyan); font-family: var(--font-heading);">Cell #1
+                            Details</h4>
+                        <div
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem; font-size: 0.88rem;">
+                            <div>Voltage: <strong id="cellVoltage" style="color: #fff;">3.72 V</strong></div>
+                            <div>Temperature: <strong id="cellTemp" style="color: #10B981;">31.4 °C</strong></div>
+                            <div>Internal Resistance: <strong id="cellRes" style="color: #fff;">1.4 mΩ</strong></div>
+                            <div>Health Status: <span id="cellStatus" class="status-badge badge-good">Optimal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Interactive Real-Time Charging Physics Simulator -->
+                <div class="chart-card col-6">
+                    <div class="chart-header">
+                        <div class="chart-title">⚡ Interactive Fast-Charging Physics Simulator</div>
+                    </div>
+
+                    <div class="sim-control-group" style="margin-bottom: 1rem;">
+                        <label>Charging Current (Amps): <strong id="simAmpsVal" style="color: var(--accent-cyan);">150
+                                A</strong></label>
+                        <input type="range" id="simAmps" min="50" max="300" step="10" value="150"
+                            style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div class="sim-control-group" style="margin-bottom: 1rem;">
+                        <label>Ambient Temperature (°C): <strong id="simTempVal" style="color: #F59E0B;">32
+                                °C</strong></label>
+                        <input type="range" id="simTemp" min="10" max="50" step="1" value="32"
+                            style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div class="sim-control-group" style="margin-bottom: 1rem;">
+                        <label>Current Battery SOC (%): <strong id="simSocVal"
+                                style="color: var(--accent-teal);">25%</strong></label>
+                        <input type="range" id="simSoc" min="10" max="90" step="5" value="25"
+                            style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div class="sim-results"
+                        style="background: rgba(0, 240, 255, 0.08); padding: 1rem; border-radius: 10px; border: 1px solid rgba(0, 240, 255, 0.25);">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem;">
+                            <span>Calculated Charging Power:</span>
+                            <strong id="simPower" style="color: var(--accent-cyan); font-size: 1.1rem;">60.0 kW</strong>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem;">
+                            <span>Estimated Time to 80% SOC:</span>
+                            <strong id="simTimeTo80" style="color: #fff;">28 mins</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                            <span>Thermal Overheat Risk:</span>
+                            <strong id="simThermalRisk" style="color: #10B981;">LOW (Normal)</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 3. Interactive Route & Charging Cost Estimator -->
+            <div class="charts-grid">
+                <div class="chart-card col-12">
+                    <div class="chart-header">
+                        <div class="chart-title">🛣️ Interactive Karnataka Route Energy & Charging Cost Calculator</div>
+                    </div>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label style="font-size: 0.85rem; color: var(--text-secondary);">Start Depot:</label>
+                            <select id="routeOrigin" class="filter-select" style="width: 100%; margin-top: 0.3rem;">
+                                <option value="Bengaluru">Bengaluru Hub</option>
+                                <option value="Mangalore">Mangalore Hub</option>
+                                <option value="Belagavi">Belagavi Hub</option>
+                                <option value="Mysuru">Mysuru Hub</option>
+                                <option value="Hubballi">Hubballi Hub</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.85rem; color: var(--text-secondary);">Destination Depot:</label>
+                            <select id="routeDest" class="filter-select" style="width: 100%; margin-top: 0.3rem;">
+                                <option value="Mangalore">Mangalore Hub (350 km)</option>
+                                <option value="Mysuru">Mysuru Hub (145 km)</option>
+                                <option value="Belagavi">Belagavi Hub (505 km)</option>
+                                <option value="Hubballi">Hubballi Hub (410 km)</option>
+                                <option value="Bengaluru">Bengaluru Hub</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.85rem; color: var(--text-secondary);">Vehicle Model:</label>
+                            <select id="routeModel" class="filter-select" style="width: 100%; margin-top: 0.3rem;">
+                                <option value="Tata Nexon EV">Tata Nexon EV (18.2 kWh/100km)</option>
+                                <option value="Kia EV6">Kia EV6 (21.4 kWh/100km)</option>
+                                <option value="Mahindra XUV400">Mahindra XUV400 (19.5 kWh/100km)</option>
+                                <option value="Hyundai Ioniq 5">Hyundai Ioniq 5 (17.8 kWh/100km)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button id="calcRouteBtn" class="ai-btn" style="width: 100%; padding: 0.6rem;">Calculate
+                                Route Energy</button>
+                        </div>
+                    </div>
+
+                    <div id="routeOutput" class="kpi-grid" style="margin-bottom: 0;">
+                        <div class="kpi-card" style="padding: 1rem;">
+                            <div class="kpi-header">Estimated Distance</div>
+                            <div id="routeDistVal" class="kpi-value" style="font-size: 1.4rem;">350 km</div>
+                        </div>
+                        <div class="kpi-card" style="padding: 1rem;">
+                            <div class="kpi-header">Total Energy Needed</div>
+                            <div id="routeEnergyVal" class="kpi-value"
+                                style="font-size: 1.4rem; color: var(--accent-cyan);">63.7 kWh</div>
+                        </div>
+                        <div class="kpi-card" style="padding: 1rem;">
+                            <div class="kpi-header">Required Fast Charging Stops</div>
+                            <div id="routeStopsVal" class="kpi-value"
+                                style="font-size: 1.4rem; color: var(--accent-teal);">1 Stop (Mysuru)</div>
+                        </div>
+                        <div class="kpi-card" style="padding: 1rem;">
+                            <div class="kpi-header">Total Estimated Charging Cost</div>
+                            <div id="routeCostVal" class="kpi-value"
+                                style="font-size: 1.4rem; color: var(--status-healthy);">₹637.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: BATTERY HEALTH -->
+        <section id="tab-battery" class="tab-content">
+            <div class="charts-grid" style="margin-bottom: 1.5rem;">
+                <div class="chart-card col-6">
+                    <div class="chart-header">
+                        <div class="chart-title">Critical Battery Health Vehicles (SOH < 80%)</div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Vehicle ID</th>
+                                    <th>Model</th>
+                                    <th>Fleet Name</th>
+                                    <th>Current SOH</th>
+                                    <th>City Location</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>EV0009</strong></td>
+                                    <td>Tata Nexon EV</td>
+                                    <td>Express Logistics</td>
+                                    <td><span style="color: var(--status-critical); font-weight: bold;">72.1%</span>
+                                    </td>
+                                    <td>Belagavi</td>
+                                    <td><span class="status-badge badge-danger">Cell Replacement</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>EV0014</strong></td>
+                                    <td>Mahindra XUV400</td>
+                                    <td>Green Mobility</td>
+                                    <td><span style="color: var(--status-critical); font-weight: bold;">76.4%</span>
+                                    </td>
+                                    <td>Mangalore</td>
+                                    <td><span class="status-badge badge-warning">Scheduled Maint</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>EV0027</strong></td>
+                                    <td>MG ZS EV</td>
+                                    <td>EcoPulse</td>
+                                    <td><span style="color: var(--status-warning); font-weight: bold;">78.2%</span></td>
+                                    <td>Bengaluru</td>
+                                    <td><span class="status-badge badge-warning">Scheduled Maint</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-card col-6">
+                        <div class="chart-header">
+                            <div class="chart-title">EV Model Comparison: Avg SOH vs Energy Efficiency</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chartMfrComparison"></canvas>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- PAGE 3: CHARGING ANALYTICS -->
+        <section id="tab-charging" class="tab-content">
+            <div class="charts-grid">
+                <div class="chart-card col-6">
+                    <div class="chart-header">
+                        <div class="chart-title">Charging Session Volume by Charging Type</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartChargingType"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card col-6">
+                    <div class="chart-header">
+                        <div class="chart-title">Peak Charging Demand Hours (24-Hour Profile)</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartPeakHours"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: FLEET PERFORMANCE -->
+        <section id="tab-fleet" class="tab-content">
+            <div class="chart-card col-12">
+                <div class="table-controls"
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="chart-title">Fleet Depot Operations Data Grid</div>
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <input type="text" id="tableSearchInput" class="search-input"
+                            placeholder="🔍 Search vehicle, fleet or city...">
+                        <button id="exportCsvBtn" class="export-btn">📥 Export CSV Report</button>
+                    </div>
+                </div>
+                <table id="fleetDataTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fleet Name</th>
+                            <th>Primary City Hubs</th>
+                            <th>Total Sessions</th>
+                            <th>Avg Battery SOH</th>
+                            <th>Total Distance (km)</th>
+                            <th>Efficiency (kWh/100km)</th>
+                            <th>Health Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Premium Fleet</strong></td>
+                            <td>Bengaluru, Mangalore</td>
+                            <td>1,420</td>
+                            <td>95.2%</td>
+                            <td>245,000</td>
+                            <td>18.5</td>
+                            <td><span class="status-badge badge-good">Optimal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Green Mobility</strong></td>
+                            <td>Mysuru, Belagavi</td>
+                            <td>1,280</td>
+                            <td>94.1%</td>
+                            <td>198,200</td>
+                            <td>19.1</td>
+                            <td><span class="status-badge badge-good">Optimal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Express Logistics</strong></td>
+                            <td>Hubballi, Mangalore</td>
+                            <td>1,150</td>
+                            <td>89.4%</td>
+                            <td>285,400</td>
+                            <td>22.4</td>
+                            <td><span class="status-badge badge-warning">Moderate Risk</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>EcoPulse</strong></td>
+                            <td>Bengaluru, Belagavi</td>
+                            <td>1,150</td>
+                            <td>96.0%</td>
+                            <td>175,000</td>
+                            <td>17.9</td>
+                            <td><span class="status-badge badge-good">Optimal</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PAGE 5: COST ANALYSIS -->
+        <section id="tab-cost" class="tab-content">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">Avg Cost per Session</div>
+                    <div class="kpi-value">₹368.50</div>
+                    <div class="kpi-subtext positive">Across 5,000 sessions</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">Peak Tariff Charging Spend</div>
+                    <div class="kpi-value">₹742,000</div>
+                    <div class="kpi-subtext negative">40% of total spend</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">AI Cost Savings Opportunity</div>
+                    <div class="kpi-value">₹170,000 / mo</div>
+                    <div class="kpi-subtext positive">Via peak tariff shifting</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 6: AI DASHBOARD -->
+        <section id="tab-ai" class="tab-content">
+            <div class="ai-console">
+                <h2 style="font-family: var(--font-heading);">🤖 AI Fleet Assistant & Predictive Insights Engine</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                    Ask natural language questions regarding your 5,000 EV charging records, battery degradation
+                    forecasts, or charging optimization strategies.
+                </p>
+                <div class="ai-input-group">
+                    <input type="text" id="aiInput" class="ai-input"
+                        placeholder="e.g., Which EV models have the highest battery health? Or how can we reduce peak charging cost?">
+                    <button id="aiSubmitBtn" class="ai-btn">Ask AI Assistant</button>
+                </div>
+                <div id="aiResponse" class="ai-response"></div>
+            </div>
+        </section>
+
+        <!-- PAGE 7: DATA GOVERNANCE -->
+        <section id="tab-governance" class="tab-content">
+            <div class="chart-card col-12">
+                <div class="chart-header">
+                    <div class="chart-title">Data Quality, Security & Compliance Matrix (5,000 Records Verified)</div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Security & Governance Layer</th>
+                            <th>Implementation Standard</th>
+                            <th>Audit Status</th>
+                            <th>Last Compliance Check</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dynamic Data Masking (DDM)</td>
+                            <td>Snowflake MASK_DRIVER_ID policy protecting Driver_ID PII</td>
+                            <td><span class="status-badge badge-good">ENFORCED</span></td>
+                            <td>Passed (2026-08-04)</td>
+                        </tr>
+                        <tr>
+                            <td>Row-Level Security (RLS)</td>
+                            <td>Snowflake ROW ACCESS POLICY on Fleet_ID & Power BI RLS</td>
+                            <td><span class="status-badge badge-good">ENFORCED</span></td>
+                            <td>Passed (2026-08-04)</td>
+                        </tr>
+                        <tr>
+                            <td>Zero-Copy Cloning & Time Travel</td>
+                            <td>EV_FLEET_DB_DEV clone with 30-day Time Travel point-in-time recovery</td>
+                            <td><span class="status-badge badge-good">ACTIVE</span></td>
+                            <td>Passed (2026-08-04)</td>
+                        </tr>
+                        <tr>
+                            <td>Automated Data Quality Assertions</td>
+                            <td>SOH bounds (50-100%) & Energy balance validation via Alteryx & SP</td>
+                            <td><span class="status-badge badge-good">ACTIVE</span></td>
+                            <td>Passed (2026-08-04)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

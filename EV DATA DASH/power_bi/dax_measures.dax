@@ -1,0 +1,116 @@
+// ============================================================================
+// POWER BI PRODUCTION DAX MEASURES - EV FLEET ANALYTICS PLATFORM
+// Theme: Dark Blue Enterprise (Microsoft Fabric Design System)
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// SECTION 1: KEY PERFORMANCE INDICATORS (KPIs)
+// ----------------------------------------------------------------------------
+
+[Total Vehicles] = 
+DISTINCTCOUNT(FACT_CHARGING_SESSIONS[Vehicle_SK])
+
+[Total Fleets] = 
+DISTINCTCOUNT(DIM_VEHICLE[Fleet_ID])
+
+[Average Battery SOH %] = 
+AVERAGE(FACT_CHARGING_SESSIONS[Battery_SOH])
+
+[Healthy Battery Count (SOH >= 90%)] = 
+CALCULATE(
+    [Total Vehicles],
+    FILTER(
+        VALUES(DIM_VEHICLE[Vehicle_SK]),
+        [Average Battery SOH %] >= 90.0
+    )
+)
+
+[Critical Battery Count (SOH < 80%)] = 
+CALCULATE(
+    [Total Vehicles],
+    FILTER(
+        VALUES(DIM_VEHICLE[Vehicle_SK]),
+        [Average Battery SOH %] < 80.0
+    )
+)
+
+[Total Energy Consumed (kWh)] = 
+SUM(FACT_CHARGING_SESSIONS[Energy_Consumed_kWh])
+
+[Total Charging Cost ($)] = 
+SUM(FACT_CHARGING_SESSIONS[Charging_Cost_USD])
+
+[Average Charging Cost per Session ($)] = 
+AVERAGE(FACT_CHARGING_SESSIONS[Charging_Cost_USD])
+
+[Average Cost per kWh ($/kWh)] = 
+DIVIDE([Total Charging Cost ($)], [Total Energy Consumed (kWh)], 0)
+
+[Average Charging Duration (Hours)] = 
+AVERAGE(FACT_CHARGING_SESSIONS[Charging_Duration_Hours])
+
+[Total Distance Travelled (km)] = 
+SUM(FACT_CHARGING_SESSIONS[Distance_Travelled_km])
+
+[Fleet Efficiency (kWh/100km)] = 
+DIVIDE([Total Energy Consumed (kWh)], [Total Distance Travelled (km)] / 100, 0)
+
+// ----------------------------------------------------------------------------
+// SECTION 2: ADVANCED ANALYTICS & TIME INTELLIGENCE
+// ----------------------------------------------------------------------------
+
+[SOH Degradation Rate (% per 10k km)] = 
+VAR TotalDist = [Total Distance Travelled (km)]
+VAR DegradedSOH = 100.0 - [Average Battery SOH %]
+RETURN
+    DIVIDE(DegradedSOH, TotalDist / 10000, 0)
+
+[Cost MoM Growth %] = 
+VAR CurrentMonthCost = [Total Charging Cost ($)]
+VAR PreviousMonthCost = 
+    CALCULATE(
+        [Total Charging Cost ($)],
+        DATEADD(DIM_DATE[Date], -1, MONTH)
+    )
+RETURN
+    DIVIDE(CurrentMonthCost - PreviousMonthCost, PreviousMonthCost, 0)
+
+[Energy Consumption MoM Growth %] = 
+VAR CurrentEnergy = [Total Energy Consumed (kWh)]
+VAR PreviousEnergy = 
+    CALCULATE(
+        [Total Energy Consumed (kWh)],
+        DATEADD(DIM_DATE[Date], -1, MONTH)
+    )
+RETURN
+    DIVIDE(CurrentEnergy - PreviousEnergy, PreviousEnergy, 0)
+
+// ----------------------------------------------------------------------------
+// SECTION 3: AI & PREDICTIVE RISK METRICS
+// ----------------------------------------------------------------------------
+
+[Maintenance Risk Score (0-100)] = 
+VAR SOHWeight = (100 - [Average Battery SOH %]) * 0.6
+VAR EfficiencyWeight = IF([Fleet Efficiency (kWh/100km)] > 25, 20, 5)
+VAR AgeFactor = AVERAGE(DIM_VEHICLE[Manufacturing_Year])
+RETURN
+    MIN(100, ROUND(SOHWeight + EfficiencyWeight, 1))
+
+[Predicted Battery Replacement Date] = 
+VAR CurrentSOH = [Average Battery SOH %]
+VAR DegPerYear = 3.2
+VAR YearsRemaining = DIVIDE(CurrentSOH - 70.0, DegPerYear, 0)
+RETURN
+    DATE(YEAR(TODAY()) + INT(YearsRemaining), MONTH(TODAY()), DAY(TODAY()))
+
+[Peak Charging Hour Volume] = 
+CALCULATE(
+    COUNT(FACT_CHARGING_SESSIONS[Session_SK]),
+    FILTER(
+        FACT_CHARGING_SESSIONS,
+        HOUR(FACT_CHARGING_SESSIONS[Charging_Start_Time]) >= 14 && HOUR(FACT_CHARGING_SESSIONS[Charging_Start_Time]) <= 19
+    )
+)
+
+[Dynamic Status Badge] = 
+IF([Average Battery SOH %] >= 90, "🟢 EXCELLENT HEALTH", IF([Average Battery SOH %] >= 80, "🟡 MODERATE DEGRADATION", "🔴 CRITICAL MAINTENANCE"))
